@@ -29,3 +29,31 @@
     margin-left: 20px;
     margin-bottom: 20px;
 }
+
+.all-posts {
+    border: 1px lightgrey solid;
+    border-radius: 10px; 
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 10px;
+}
+
+.all-posts-user {
+    margin: 20px;
+}
+
+.all-posts-content {
+    margin-left: 20px;
+    margin-bottom: 1px;
+}
+
+.all-posts-time {
+    margin-left: 20px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.all-posts-likes {
+    margin-left: 20px;
+    margin-top: 1px;
+}

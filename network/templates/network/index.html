@@ -14,9 +14,12 @@
             </form>
         </div>
     {% endif %}
-    <div id="all-posts">
         {% for post in posts %}
-            <h1>{{post.content}}</h1>
+            <div class="all-posts">
+                <h6 class="all-posts-user">{{post.user}}</h6>
+                <p class="all-posts-content">{{post.content}}</p>
+                <p class="all-posts-time">{{post.time}}</p>
+                <p class="all-posts-likes">Likes: {{post.likes}}</p>
+            </div>
         {% endfor %}
-    </div>
 {% endblock %}
