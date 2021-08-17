@@ -1,0 +1,31 @@
+#title {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    margin-left: 10px;
+}
+
+#new-post-form {
+    margin-left: 15px;
+    margin-right: 15px;
+    border: 1px lightgrey solid;
+    border-radius: 10px;
+
+}
+
+#new-post-form-title {
+    margin: 20px;
+    margin-bottom: 0px;
+}
+
+#new-post-form-content {
+    margin-left: 20px;
+    margin-top: 5px;
+    width: 1850px;
+    border: 1px lightgrey solid;
+    border-radius: 10px;
+}
+
+#new-post-form-submit {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}

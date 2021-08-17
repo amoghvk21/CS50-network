@@ -3,12 +3,18 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
-from .models import User
+from .models import *
+from datetime import datetime
 
 
 def index(request):
-    return render(request, "network/index.html")
+    if request.method == "POST":
+        p = Post(user=request.user, content=request.POST["new-post-form-content"], time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), likes=0)
+        p.save()
+
+    return render(request, "network/index.html", {
+        "posts": Post.objects.all()
+    })
 
 
 def login_view(request):
