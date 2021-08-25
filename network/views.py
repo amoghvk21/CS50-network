@@ -67,3 +67,44 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+def profile(request, profileid):
+
+    if request.method == "POST":
+        if request.POST["button"] == "follow":
+            f = Follower(follower=User.objects.get(id=profileid), following=User.objects.get(id=request.user.id))
+            f.save()
+        else:
+            Follower.objects.get(follower=profileid, following=request.user.id).delete()
+
+    followers_ = Follower.objects.filter(follower=profileid)
+    following_ = Follower.objects.filter(following=profileid)
+    followers = 0
+    following = 0
+
+    for _ in followers_:
+        followers += 1
+
+    for _ in following_:
+        following += 1
+
+    if request.user.id == profileid:
+        isSameUser = True
+    else:
+        isSameUser = False
+
+    try:
+        Follower.objects.get(follower=profileid, following=request.user.id)
+        isFollowing = True
+    except:
+        isFollowing = False
+
+    return render(request, "network/profile.html", {
+        "profile": User.objects.get(id=profileid),
+        "posts": Post.objects.filter(user=profileid), 
+        "followers": followers,
+        "following": following,
+        "isSameUser": isSameUser,
+        "isFollowing": isFollowing
+    })

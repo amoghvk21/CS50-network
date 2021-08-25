@@ -1,0 +1,32 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+    <h1 id="profile-profilename">Profile: {{profile.username}}</h1>
+    <p id="profile-profilefollow">Followers: {{followers}} Following: {{following}}</p>
+
+    {% if not isSameUser %}
+        {% if not isFollowing %}
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" value="follow" name="button">
+                <input type="submit" value="Follow" id="button-follow">
+            </form>
+        {% else %}
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" value="unfollow" name="button">
+                <input type="submit" value="Unfollow" id="button-follow">
+            </form>
+        {% endif %}
+    {% endif %}
+
+    {% for post in posts %}
+            <div class="all-posts">
+                <b><p class="all-posts-content">{{post.content}}</p></b>
+                <p class="all-posts-time">{{post.time}}</p>
+                <p class="all-posts-likes">Likes: {{post.likes}}</p>
+            </div>
+        {% endfor %}
+
+{% endblock %}

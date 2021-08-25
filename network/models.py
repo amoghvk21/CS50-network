@@ -20,7 +20,9 @@ class Post(models.Model):
     comments = models.ForeignKey(Comment, on_delete=models.DO_NOTHING, blank=True, related_name='post', null=True)
 
 
-
+class Follower(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=False, related_name="following")
+    following = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=False, related_name="follower")
 
 
 # Need to impliment followers and liked posts
