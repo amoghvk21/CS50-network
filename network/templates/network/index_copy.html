@@ -14,7 +14,7 @@
             </form>
         </div>
     {% endif %}
-        {% for post in page_obj %}
+        {% for post in posts %}
             <div class="all-posts">
                 <h6 class="all-posts-user"><a href="profile/{{post.user.id}}">{{post.user}}</a></h6>
                 <b><p class="all-posts-content">{{post.content}}</p></b>
@@ -22,23 +22,4 @@
                 <p class="all-posts-likes">Likes: {{post.likes}}</p>
             </div>
         {% endfor %}
-
-        <div class="pagination">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                {% endif %}
-        
-                <span class="current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-        
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}" id="pagination-next">Next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}" id="pagination-last">Last &raquo;</a>
-                {% endif %}
-            </span>
-        </div>
-
 {% endblock %}

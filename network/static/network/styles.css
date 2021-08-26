@@ -69,3 +69,17 @@
 #button-follow {
     margin-left: 925px;
 }
+
+.pagination {
+    margin: 15px;
+}
+
+#pagination-next {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#pagination-last {
+    margin-left: 10px;
+    margin-right: 10px;
+}

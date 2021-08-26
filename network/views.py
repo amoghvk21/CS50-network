@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from .models import *
 from datetime import datetime
+from django.core.paginator import Paginator
 
 
 def index(request):
@@ -12,8 +13,14 @@ def index(request):
         p = Post(user=request.user, content=request.POST["new-post-form-content"], time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), likes=0)
         p.save()
 
+    posts = Post.objects.all()
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     return render(request, "network/index.html", {
-        "posts": Post.objects.all()
+        "posts": posts,
+        "page_obj": page_obj
     })
 
 

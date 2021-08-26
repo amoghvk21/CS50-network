@@ -25,4 +25,4 @@ class Follower(models.Model):
     following = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=False, related_name="follower")
 
 
-# Need to impliment followers and liked posts
+# Need to impliment liked posts
