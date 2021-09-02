@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.backends import RemoteUserBackend
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -7,11 +8,22 @@ from .models import *
 from datetime import datetime
 from django.core.paginator import Paginator
 
+#<button data-postid="{{post.id}}" style="display: none;" onclick="save(event)" id="editpost-save">Save</button>
+
+'''
+
+'''
 
 def index(request):
     if request.method == "POST":
-        p = Post(user=request.user, content=request.POST["new-post-form-content"], time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), likes=0)
-        p.save()
+        if request.POST['new-post-content'] == 'null':
+            p = Post(user=request.user, content=request.POST["new-post-form-content"], time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), likes=0)
+            p.save()
+        else:
+            #edit post form content
+            p = Post.objects.get(user=request.user, content=request.POST['old-post-content'], time=request.POST['old-post-time'])
+            p.content = request.POST['new-post-content']
+            p.save()
 
     posts = Post.objects.all()
     paginator = Paginator(posts, 10)
@@ -78,12 +90,17 @@ def register(request):
 
 def profile(request, profileid):
 
-    if request.method == "POST":
-        if request.POST["button"] == "follow":
-            f = Follower(follower=User.objects.get(id=profileid), following=User.objects.get(id=request.user.id))
-            f.save()
+    if request.method == 'POST':
+        if request.POST['follow'] == 'null':
+            p = Post.objects.get(user=request.user, content=request.POST['old-post-content'], time=request.POST['old-post-time'])
+            p.content = request.POST['new-post-content']
+            p.save()
         else:
-            Follower.objects.get(follower=profileid, following=request.user.id).delete()
+            if request.POST["button"] == "follow":
+                f = Follower(follower=User.objects.get(id=profileid), following=User.objects.get(id=request.user.id))
+                f.save()
+            else:
+                Follower.objects.get(follower=profileid, following=request.user.id).delete()
 
     followers_ = Follower.objects.filter(follower=profileid)
     following_ = Follower.objects.filter(following=profileid)

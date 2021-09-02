@@ -15,7 +15,7 @@ class Comment(models.Model):
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=False, related_name='post')
     content = models.CharField(max_length=100, blank=False)
-    time = models.DateTimeField(blank=False)
+    time = models.CharField(max_length=19)
     likes = models.IntegerField(default=0)
     comments = models.ForeignKey(Comment, on_delete=models.DO_NOTHING, blank=True, related_name='post', null=True)
 

@@ -11,22 +11,44 @@
                 {% csrf_token %}
                 <input type="hidden" value="follow" name="button">
                 <input type="submit" value="Follow" id="button-follow">
+                <input type="hidden" name="follow" value="true">
             </form>
         {% else %}
             <form method="POST" action="">
                 {% csrf_token %}
                 <input type="hidden" value="unfollow" name="button">
                 <input type="submit" value="Unfollow" id="button-follow">
+                <input type="hidden" name="follow" value="true">
             </form>
         {% endif %}
     {% endif %}
 
-    {% for post in posts %}
+    {% if isSameUser %}
+        {% for post in posts %}
+            <div class="all-posts">
+                <form action="" method='POST'>
+                    {% csrf_token %}
+                    <p id="post-{{post.id}}" class="all-posts-content" style="margin: 20px;"><b>{{post.content}}</b></p>
+                    <textarea class="editpost-textarea" id="editpost-textarea-{{post.id}}" style="display: none; margin-top: 20px;" name="new-post-content">{{post.content}}</textarea>
+                    <p class="all-posts-time">{{post.time}}</p>
+                    <p class="all-posts-likes">Likes: {{post.likes}}</p>
+                    <button data-postid="{{post.id}}" class="editpost-button" id="editpost-button-{{post.id}}" onclick="edit(event)">Edit Post</button>
+                    <input type="submit" id="editpost-submit-{{post.id}}" value="Save" style="display: none;" class="editpost-submit">
+                    <input type="hidden" name="old-post-content" value="{{post.content}}">
+                    <input type="hidden" name="old-post-time" value="{{post.time}}">
+                    <input type='hidden' name="follow" value="null">
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        {% for post in posts %}
             <div class="all-posts">
                 <b><p class="all-posts-content">{{post.content}}</p></b>
                 <p class="all-posts-time">{{post.time}}</p>
                 <p class="all-posts-likes">Likes: {{post.likes}}</p>
             </div>
         {% endfor %}
+    {% endif %}
+    
 
 {% endblock %}

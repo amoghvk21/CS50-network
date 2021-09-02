@@ -11,15 +11,26 @@
                 <textarea id="new-post-form-content" name="new-post-form-content"></textarea>
                 <br>
                 <button type="submit" id="new-post-form-submit" class="btn btn-primary">Submit</button>
+                <input type="hidden" name="new-post-content" value="null">
             </form>
         </div>
     {% endif %}
         {% for post in page_obj %}
             <div class="all-posts">
-                <h6 class="all-posts-user"><a href="profile/{{post.user.id}}">{{post.user}}</a></h6>
-                <b><p class="all-posts-content">{{post.content}}</p></b>
-                <p class="all-posts-time">{{post.time}}</p>
-                <p class="all-posts-likes">Likes: {{post.likes}}</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <h6 class="all-posts-user"><a href="profile/{{post.user.id}}">{{post.user}}</a></h6>
+                    <p id="post-{{post.id}}" class="all-posts-content"><b>{{post.content}}</b></p>
+                    <textarea class="editpost-textarea" id="editpost-textarea-{{post.id}}" style="display: none;" name="new-post-content">{{post.content}}</textarea>
+                    <p class="all-posts-time">{{post.time}}</p>
+                    <p class="all-posts-likes">Likes: {{post.likes}}</p>
+                    {% if post.user == request.user %}
+                        <button data-postid="{{post.id}}" class="editpost-button" id="editpost-button-{{post.id}}" onclick="edit(event)">Edit Post</button>
+                        <input type="submit" id="editpost-submit-{{post.id}}" value="Save" style="display: none;" class="editpost-submit">
+                        <input type="hidden" name="old-post-content" value="{{post.content}}">
+                        <input type="hidden" name="old-post-time" value="{{post.time}}">
+                    {% endif %}
+                </form>
             </div>
         {% endfor %}
 
