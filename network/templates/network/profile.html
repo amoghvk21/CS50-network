@@ -37,6 +37,13 @@
                     <input type="hidden" name="old-post-content" value="{{post.content}}">
                     <input type="hidden" name="old-post-time" value="{{post.time}}">
                     <input type='hidden' name="follow" value="null">
+                    {% if post.id in likedPosts %}
+                        <button class="likeButton" id='unlike-post-{{post.id}}' data-postid="{{post.id}}" data-userid="{{user.id}}" onclick="unlike(event)">Unlike</button>
+                        <button class="likeButton" style="display: none;" id='like-post-{{post.id}}' data-postid="{{post.id}}" data-userid="{{user.id}}" onclick="like(event)">Like</button>
+                    {% else %}
+                        <button class="likeButton" id='like-post-{{post.id}}' data-postid="{{post.id}}" data-userid="{{user.id}}" onclick="like(event)">Like</button>
+                        <button class="likeButton" style="display: none;" id='unlike-post-{{post.id}}' data-postid="{{post.id}}" data-userid="{{user.id}}" onclick="unlike(event)">Unlike</button>
+                    {% endif %}
                 </form>
             </div>
         {% endfor %}
@@ -46,6 +53,13 @@
                 <b><p class="all-posts-content">{{post.content}}</p></b>
                 <p class="all-posts-time">{{post.time}}</p>
                 <p class="all-posts-likes">Likes: {{post.likes}}</p>
+                {% if post.id in likedPosts %}
+                    <button class="likeButton" id='unlike-post-{{post.id}}' data-postid="{{post.id}}" data-userid="{{user.id}}" onclick="unlike(event)">Unlike</button>
+                    <button class="likeButton" style="display: none;" id='like-post-{{post.id}}' data-postid="{{post.id}}" data-userid="{{user.id}}" onclick="like(event)">Like</button>
+                {% else %}
+                    <button class="likeButton" id='like-post-{{post.id}}' data-postid="{{post.id}}" data-userid="{{user.id}}" onclick="like(event)">Like</button>
+                    <button class="likeButton" style="display: none;" id='unlike-post-{{post.id}}' data-postid="{{post.id}}" data-userid="{{user.id}}" onclick="unlike(event)">Unlike</button>
+                {% endif %}
             </div>
         {% endfor %}
     {% endif %}

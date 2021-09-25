@@ -1,18 +1,17 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import RemoteUserBackend
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators import csrf
 from .models import *
 from datetime import datetime
 from django.core.paginator import Paginator
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
-#<button data-postid="{{post.id}}" style="display: none;" onclick="save(event)" id="editpost-save">Save</button>
-
-'''
-
-'''
 
 def index(request):
     if request.method == "POST":
@@ -30,9 +29,14 @@ def index(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
+    likedPosts = []
+    for post in Post.objects.filter(likedUsers = request.user.id):
+        likedPosts.append(post.id)
+
     return render(request, "network/index.html", {
         "posts": posts,
-        "page_obj": page_obj
+        "page_obj": page_obj,
+        "likedPosts": likedPosts
     })
 
 
@@ -124,11 +128,58 @@ def profile(request, profileid):
     except:
         isFollowing = False
 
+    likedPosts = []
+    for post in Post.objects.filter(likedUsers = request.user.id):
+        likedPosts.append(post.id)
+
     return render(request, "network/profile.html", {
         "profile": User.objects.get(id=profileid),
         "posts": Post.objects.filter(user=profileid), 
         "followers": followers,
         "following": following,
         "isSameUser": isSameUser,
-        "isFollowing": isFollowing
+        "isFollowing": isFollowing,
+        "likedPosts": likedPosts
     })
+
+@csrf_exempt
+@login_required
+def like(request):
+
+    # Get the data
+    data = json.loads(request.body)
+    postid = data.get("postid", "")
+    userid = data.get("userid", "")
+
+    print(postid)
+    print(userid)
+
+    p = Post.objects.get(id=postid)
+    p.likes += 1
+    p.save()   
+    p.likedUsers.add(User.objects.get(id=userid))
+
+    return JsonResponse({"message": "Liked"}, status=201)
+
+@csrf_exempt
+@login_required
+def unlike(request):
+
+    # Get the data
+    data = json.loads(request.body)
+    postid = data.get("postid", "")
+    userid = data.get("userid", "")
+
+    print(postid)
+    print(userid)
+
+    p = Post.objects.get(id=postid)
+    p.likes -= 1
+    p.save()   
+    p.likedUsers.remove(User.objects.get(id=userid))
+
+    return JsonResponse({"message": "Unliked"}, status=201)
+
+
+def edit(request):
+    pass

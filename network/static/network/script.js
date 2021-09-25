@@ -50,3 +50,58 @@ function save(event) {
     // Code here...
 
 }
+
+function like(event) {
+
+    const postid = event.target.dataset.postid;
+    const userid = event.target.dataset.userid;
+
+    fetch('/like_post', {
+        method: 'POST',
+        body: JSON.stringify({
+            postid: postid,
+            userid: userid
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+    });
+
+    let likes = Number(document.querySelector(`#likes-${postid}`).innerHTML);
+    likes++;
+    document.querySelector(`#likes-${postid}`).innerHTML = String(likes);
+
+    document.querySelector(`#unlike-post-${postid}`).style.display = 'block';
+    document.querySelector(`#like-post-${postid}`).style.display = 'none';
+
+    return false;
+}
+
+
+function unlike(event) {
+    
+    const postid = event.target.dataset.postid;
+    const userid = event.target.dataset.userid;
+
+    fetch('/unlike_post', {
+        method: 'POST',
+        body: JSON.stringify({
+            postid: postid,
+            userid: userid
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+    });
+
+    let likes = Number(document.querySelector(`#likes-${postid}`).innerHTML);
+    likes--;
+    document.querySelector(`#likes-${postid}`).innerHTML = String(likes);
+
+    document.querySelector(`#like-post-${postid}`).style.display = 'block';
+    document.querySelector(`#unlike-post-${postid}`).style.display = 'none';
+
+    return false;
+}
