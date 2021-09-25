@@ -73,6 +73,7 @@
 /* bootstrap code */
 .editpost-button {
     margin-left: 20px;
+    margin-right: 20px;
     margin-bottom: 10px;
     color: #fff;
     background-color: #007bff;
@@ -97,6 +98,7 @@
 /* bootstrap code */
 .editpost-submit {
     margin-left: 20px;
+    margin-right: 20px;
     margin-bottom: 10px;
     color: #fff;
     background-color: #007bff;

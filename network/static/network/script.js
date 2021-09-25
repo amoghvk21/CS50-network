@@ -46,9 +46,27 @@ function edit(event) {
 function save(event) {
 
     const postid = event.target.dataset.postid;
+    const content = document.querySelector(`#editpost-textarea-${postid}`).value
 
-    // Code here...
+    fetch('/edit_post', {
+        method: 'POST',
+        body: JSON.stringify({
+            postid: postid,
+            content: content
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+    });
 
+    document.querySelector(`#editpost-button-${postid}`).style.display = 'block';
+    document.querySelector(`#editpost-textarea-${postid}`).style.display = 'none';
+    document.querySelector(`#editpost-submit-${postid}`).style.display = 'none';
+    document.querySelector(`#post-${postid}`).style.display = 'block';
+    document.querySelector(`#post-${postid}`).innerHTML = `<b>${content}<b>`;
+
+    return false
 }
 
 function like(event) {

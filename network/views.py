@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 
 
 def index(request):
+    '''
     if request.method == "POST":
         if request.POST['new-post-content'] == 'null':
             p = Post(user=request.user, content=request.POST["new-post-form-content"], time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), likes=0)
@@ -23,6 +24,7 @@ def index(request):
             p = Post.objects.get(user=request.user, content=request.POST['old-post-content'], time=request.POST['old-post-time'])
             p.content = request.POST['new-post-content']
             p.save()
+    '''
 
     posts = Post.objects.all()
     paginator = Paginator(posts, 10)
@@ -142,6 +144,26 @@ def profile(request, profileid):
         "likedPosts": likedPosts
     })
 
+
+@login_required
+@csrf_exempt
+def edit(request):
+
+    # Get the data
+    data = json.loads(request.body)
+    postid = data.get("postid", "")
+    content = data.get("content", "")
+
+    print(postid, content)
+
+    p = Post.objects.get(id=postid)
+    p.content = content
+    p.time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    p.save()
+
+    return JsonResponse({"message": "Post editied successfully"}, status=201)
+
+
 @csrf_exempt
 @login_required
 def like(request):
@@ -161,6 +183,7 @@ def like(request):
 
     return JsonResponse({"message": "Liked"}, status=201)
 
+
 @csrf_exempt
 @login_required
 def unlike(request):
@@ -170,16 +193,9 @@ def unlike(request):
     postid = data.get("postid", "")
     userid = data.get("userid", "")
 
-    print(postid)
-    print(userid)
-
     p = Post.objects.get(id=postid)
     p.likes -= 1
     p.save()   
     p.likedUsers.remove(User.objects.get(id=userid))
 
     return JsonResponse({"message": "Unliked"}, status=201)
-
-
-def edit(request):
-    pass
