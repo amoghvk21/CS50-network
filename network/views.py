@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import RemoteUserBackend
 from django.db import IntegrityError
+from django.db.models.query import EmptyQuerySet
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -11,20 +12,10 @@ from django.core.paginator import Paginator
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from itertools import chain
 
 
 def index(request):
-    '''
-    if request.method == "POST":
-        if request.POST['new-post-content'] == 'null':
-            p = Post(user=request.user, content=request.POST["new-post-form-content"], time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), likes=0)
-            p.save()
-        else:
-            #edit post form content
-            p = Post.objects.get(user=request.user, content=request.POST['old-post-content'], time=request.POST['old-post-time'])
-            p.content = request.POST['new-post-content']
-            p.save()
-    '''
 
     posts = Post.objects.all()
     paginator = Paginator(posts, 10)
@@ -145,6 +136,38 @@ def profile(request, profileid):
     })
 
 
+def following(request):
+
+    following = Follower.objects.filter(following=request.user.id)
+    temp = []
+
+    for person in following:
+        temp.append(Post.objects.filter(user=person.follower))
+
+    try:
+        if len(temp) > 1:
+            for x in range(1, len(temp)-1):
+                posts = temp[x] | temp[x+1]
+        else:
+            posts = temp[0]
+    except IndexError:
+        return HttpResponse("Not following anyone")
+
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    likedPosts = []
+    for post in Post.objects.filter(likedUsers = request.user.id):
+        likedPosts.append(post.id)
+
+    return render(request, "network/index.html", {
+        "posts": posts,
+        "page_obj": page_obj,
+        "likedPosts": likedPosts
+    })
+
+
 @login_required
 @csrf_exempt
 def edit(request):
@@ -153,8 +176,6 @@ def edit(request):
     data = json.loads(request.body)
     postid = data.get("postid", "")
     content = data.get("content", "")
-
-    print(postid, content)
 
     p = Post.objects.get(id=postid)
     p.content = content
@@ -172,9 +193,6 @@ def like(request):
     data = json.loads(request.body)
     postid = data.get("postid", "")
     userid = data.get("userid", "")
-
-    print(postid)
-    print(userid)
 
     p = Post.objects.get(id=postid)
     p.likes += 1
