@@ -136,6 +136,7 @@ def profile(request, profileid):
     })
 
 
+@login_required
 def following(request):
 
     following = Follower.objects.filter(following=request.user.id)
